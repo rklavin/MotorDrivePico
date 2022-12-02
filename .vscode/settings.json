@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "address_mapped.h": "c",
+        "defs.h": "c",
+        "list.h": "c",
+        "stdio.h": "c",
+        "uart.h": "c",
+        "storage.h": "c",
+        "config.h": "c",
+        "shell.h": "c",
+        "shell_commands.h": "c",
+        "ff.h": "c",
+        "stdlib.h": "c"
+    }
+}
