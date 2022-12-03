@@ -77,7 +77,7 @@ DSTATUS disk_initialize (
 		// First check if there is enough ROM space, all sizes totalled should be less than or equal to device flash
 
 		// Clear init flag
-		ROM_1_Status &= 0b110;
+		ROM_1_Status &= ~STA_NOINIT;
 
 		// Check if actual C firmware size is less than that specified in the config
 		if ((__flash_binary_end - XIP_BASE) <= C_STORAGE_SIZE) return ROM_1_Status |= STA_NOINIT;
