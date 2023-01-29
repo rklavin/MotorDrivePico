@@ -1,6 +1,6 @@
 /*=========================================================================
 
-  PicoLink
+  MotorDrive
 
   config.h
 
@@ -36,3 +36,19 @@
 // datasheet for information on which other pins can be used.
 //#define UART_TX_PIN 0
 //#define UART_RX_PIN 1
+
+// GPIO
+#define PIN_MOTOR_ENABLE  7   // DIN 1
+#define PIN_MOTOR_MODE    8   // DIN 2
+#define PIN_MOTOR_SLEEP   9   // DIN 3
+#define PIN_MOTOR_FAULT   10  // DIN 4, but not actually wired
+#define ADC_IPROPI        0   // GPIO26/ADC0
+#define PIN_ADC_IPROPI    26  // GPIO26/ADC0
+#define PIN_SDA0          28  // i2c SDA0
+#define PIN_SCL0          29  // i2c SCL0
+
+#define PIN_DIN_1         7   // DIN 1
+#define PIN_DIN_2         8   // DIN 2
+#define PIN_DIN_3         9   // DIN 3
+#define PIN_DIN_4         10  // DIN 4
+#define PIN_DIN_5         11  // DIN 5
