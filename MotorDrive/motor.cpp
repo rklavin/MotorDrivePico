@@ -129,7 +129,7 @@ namespace motor {
             float max = Registers[RegSpeedRefAnalogScaleMax].getFloat();
 
             float val = ADC->readScaled();
-            Registers[RegAnalogInVoltage].setFloat(val);
+            Registers[RegAnalogInVoltage].forceFloat(val);
             val = std::clamp(val, min, max);
 
             if (val >= zero) {
