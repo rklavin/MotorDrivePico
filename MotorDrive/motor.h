@@ -90,6 +90,7 @@ namespace motor {
             const int RegSpeedRefAnalogScaleMax     = 19;   // R/W  - Float - Voltage level for 100% speed, -10V - 10V
             const int RegSpeedRefAnalogScaleMin     = 20;   // R/W  - Float - Voltage level for -100% speed, -10V - 10V
             const int RegSpeedRefAnalogScaleZero    = 21;   // R/W  - Float - Voltage level for 0% speed, -10V - 10V
+            const int RegAnalogInVoltage            = 22;   // R    - Float - Voltage level on the analog input
 
             int init();
             void update();

@@ -129,6 +129,7 @@ namespace motor {
             float max = Registers[RegSpeedRefAnalogScaleMax].getFloat();
 
             float val = ADC->readScaled();
+            Registers[RegAnalogInVoltage].setFloat(val);
             val = std::clamp(val, min, max);
 
             if (val >= zero) {
@@ -279,19 +280,19 @@ namespace motor {
         }
 
         if (Registers[RegDigitaInput2Function].getValue() == motor::DigitalInFunction::MotorEnable) {
-            val = gpio_get(PIN_DIN_2);
+            val |= gpio_get(PIN_DIN_2);
         }
 
         if (Registers[RegDigitaInput3Function].getValue() == motor::DigitalInFunction::MotorEnable) {
-            val = gpio_get(PIN_DIN_3);
+            val |= gpio_get(PIN_DIN_3);
         }
 
         if (Registers[RegDigitaInput4Function].getValue() == motor::DigitalInFunction::MotorEnable) {
-            val = gpio_get(PIN_DIN_4);
+            val |= gpio_get(PIN_DIN_4);
         }
 
         if (Registers[RegDigitaInput5Function].getValue() == motor::DigitalInFunction::MotorEnable) {
-            val = gpio_get(PIN_DIN_5);
+            val |= gpio_get(PIN_DIN_5);
         }
 
         return val;
@@ -470,6 +471,10 @@ namespace motor {
         name = "Analog Scale Zero";
         desc = "R/W - Float - Voltage level for 0% speed, -10V - 10V";
         Registers[RegSpeedRefAnalogScaleZero] = registers::Reg(name, desc, true, true, getRawFloat(0.0), 10, -10);
+
+        name = "Analog Input Voltage";
+        desc = "R - Float - Voltage level on the analog input";
+        Registers[RegAnalogInVoltage] = registers::Reg(name, desc, true, false);
         
         //name = "";
         //desc = "";
