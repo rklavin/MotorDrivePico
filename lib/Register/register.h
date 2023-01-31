@@ -34,6 +34,9 @@ namespace registers {
             int _minValue;
             bool _canRead;
             bool _canWrite;
+
+            // TODO: add data type, e.g. int, float, ...
+            // TODO: add saveable flag, if false will not save to disk during saves
     };
 
     class Registers {

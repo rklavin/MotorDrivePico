@@ -22,6 +22,12 @@
 #include "Shell/shell.h"
 #include "motor.h"
 
+// TODO: Add a streaming mode
+//		 Will simply transmit all registers and their data every x msec
+
+// TODO: Move serial communication to core 2
+//       Core 1 to only be used for motor logic
+
 //void led_blinking_task(int blink);
 void init_config();
 

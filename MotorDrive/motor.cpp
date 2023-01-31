@@ -127,10 +127,14 @@ namespace motor {
             float zero = Registers[RegSpeedRefAnalogScaleZero].getFloat();
             float min = Registers[RegSpeedRefAnalogScaleMin].getFloat();
             float max = Registers[RegSpeedRefAnalogScaleMax].getFloat();
+            float deadband = Registers[RegAnalogInDeadband].getFloat();
 
             float val = ADC->readScaled();
             Registers[RegAnalogInVoltage].forceFloat(val);
             val = std::clamp(val, min, max);
+
+            // Apply deadband
+            if (std::abs(val - zero) <= deadband) val = zero;
 
             if (val >= zero) {
                 if (max == zero) 
@@ -475,6 +479,10 @@ namespace motor {
         name = "Analog Input Voltage";
         desc = "R - Float - Voltage level on the analog input";
         Registers[RegAnalogInVoltage] = registers::Reg(name, desc, true, false);
+
+        name = "Analog Input Deadband";
+        desc = "R/W - Float - Voltage window around the zero level to be ignored";
+        Registers[RegAnalogInDeadband] = registers::Reg(name, desc, true, true, getRawFloat(0.0));
         
         //name = "";
         //desc = "";
