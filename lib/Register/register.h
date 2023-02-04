@@ -3,43 +3,49 @@
 #include <string>
 
 namespace registers {
+    enum RegisterType {
+        IntType,
+        UintType,
+        FloatType,
+    };
+
     class Reg {
         public:
             Reg();
-            Reg(std::string name, std::string desc);
-            Reg(std::string name, std::string desc, int def);
-            Reg(std::string name, std::string desc, int def, int max, int min);
-            Reg(std::string name, std::string desc, bool read, bool write);
-            Reg(std::string name, std::string desc, bool read, bool write, int def);
-            Reg(std::string name, std::string desc, bool read, bool write, int def, int max, int min);
+            Reg(RegisterType type);
+            Reg(RegisterType type, std::string name, std::string desc);
+            Reg(RegisterType type, std::string name, std::string desc, int def);
+            Reg(RegisterType type, std::string name, std::string desc, int def, int max, int min);
+            Reg(RegisterType type, std::string name, std::string desc, bool read, bool write);
+            Reg(RegisterType type, std::string name, std::string desc, bool read, bool write, int def);
+            Reg(RegisterType type, std::string name, std::string desc, bool read, bool write, int def, int max, int min);
             ~Reg();
 
             std::string name;
             std::string description;
 
-            bool canRead();
-            bool canWrite();
+            RegisterType getType();
+            bool canRead;
+            bool canWrite;
+            bool canSave;
+            int maxValue;
+            int minValue;
             void setValue(int val);
             void setFloat(float val);
             void forceValue(int val);
             void forceFloat(float val);
             int getValue();
             float getFloat();
-            int getMaxValue();
-            int getMinValue();
 
         private:
+            RegisterType _type;
             int _value;
-            int _maxValue;
-            int _minValue;
-            bool _canRead;
-            bool _canWrite;
 
             // TODO: add data type, e.g. int, float, ...
             // TODO: add saveable flag, if false will not save to disk during saves
     };
 
-    class Registers {
+    /*class Registers {
         public:
             Registers();
             ~Registers();
@@ -51,7 +57,7 @@ namespace registers {
 
         private:
             Reg Regs[RegisterCount];
-    };
+    };*/
 
     //const int RegisterCount = 256;
     //inline int Registers[RegisterCount];

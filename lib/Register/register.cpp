@@ -4,69 +4,94 @@
 
 namespace registers {
     Reg::Reg() {
+        _type = RegisterType::IntType;
         name = "";
         description = "";
-        _canRead = true;
-        _canWrite = true;
-        _maxValue = INT32_MAX;
-        _minValue = INT32_MIN;
+        canSave = true;
+        canRead = true;
+        canWrite = true;
+        maxValue = INT32_MAX;
+        minValue = INT32_MIN;
     }
 
-    Reg::Reg(std::string name, std::string desc) {
-        this->name = name;
-        description = desc;
-        _canRead = true;
-        _canWrite = true;
-        _maxValue = INT32_MAX;
-        _minValue = INT32_MIN;
+    Reg::Reg(RegisterType type) {
+        _type = type;
+        name = "";
+        description = "";
+        canSave = true;
+        canRead = true;
+        canWrite = true;
+        maxValue = INT32_MAX;
+        minValue = INT32_MIN;
     }
 
-    Reg::Reg(std::string name, std::string desc, int def) {
+    Reg::Reg(RegisterType type, std::string name, std::string desc) {
+        _type = type;
         this->name = name;
         description = desc;
-        _canRead = true;
-        _canWrite = true;
-        _maxValue = INT32_MAX;
-        _minValue = INT32_MIN;
+        canSave = true;
+        canRead = true;
+        canWrite = true;
+        maxValue = INT32_MAX;
+        minValue = INT32_MIN;
+    }
+
+    Reg::Reg(RegisterType type, std::string name, std::string desc, int def) {
+        _type = type;
+        this->name = name;
+        description = desc;
+        canSave = true;
+        canRead = true;
+        canWrite = true;
+        maxValue = INT32_MAX;
+        minValue = INT32_MIN;
         _value = def;
     }
 
-    Reg::Reg(std::string name, std::string desc, int def, int max, int min) {
+    Reg::Reg(RegisterType type, std::string name, std::string desc, int def, int max, int min) {
+        _type = type;
         this->name = name;
         description = desc;
-        _canRead = true;
-        _canWrite = true;
-        _maxValue = max;
-        _minValue = min;
+        canSave = true;
+        canRead = true;
+        canWrite = true;
+        maxValue = max;
+        minValue = min;
         _value = def;
     }
 
-    Reg::Reg(std::string name, std::string desc, bool read, bool write) {
+    Reg::Reg(RegisterType type, std::string name, std::string desc, bool read, bool write) {
+        _type = type;
         this->name = name;
         description = desc;
-        _canRead = read;
-        _canWrite = write;
-        _maxValue = INT32_MAX;
-        _minValue = INT32_MIN;
+        canSave = true;
+        canRead = read;
+        canWrite = write;
+        maxValue = INT32_MAX;
+        minValue = INT32_MIN;
     }
 
-    Reg::Reg(std::string name, std::string desc, bool read, bool write, int def) {
+    Reg::Reg(RegisterType type, std::string name, std::string desc, bool read, bool write, int def) {
+        _type = type;
         this->name = name;
         description = desc;
-        _canRead = read;
-        _canWrite = write;
-        _maxValue = INT32_MAX;
-        _minValue = INT32_MIN;
+        canSave = true;
+        canRead = read;
+        canWrite = write;
+        maxValue = INT32_MAX;
+        minValue = INT32_MIN;
         _value = def;
     }
 
-    Reg::Reg(std::string name, std::string desc, bool read, bool write, int def, int max, int min) {
+    Reg::Reg(RegisterType type, std::string name, std::string desc, bool read, bool write, int def, int max, int min) {
+        _type = type;
         this->name = name;
         description = desc;
-        _canRead = read;
-        _canWrite = write;
-        _maxValue = max;
-        _minValue = min;
+        canSave = true;
+        canRead = read;
+        canWrite = write;
+        maxValue = max;
+        minValue = min;
         _value = def;
     }
 
@@ -74,22 +99,18 @@ namespace registers {
 
     }
 
-    bool Reg::canRead() {
-        return _canRead;
-    }
-
-    bool Reg::canWrite() {
-        return _canWrite;
+    RegisterType Reg::getType() {
+        return _type;
     }
 
     void Reg::setValue(int val) {
-        if (_canWrite) _value = std::clamp(val, _minValue, _maxValue);
+        if (canWrite) _value = std::clamp(val, minValue, maxValue);
     }
 
     void Reg::setFloat(float val) {
-        val = std::clamp(val, (float)_minValue, (float)_maxValue);
+        val = std::clamp(val, (float)minValue, (float)maxValue);
         int value = *(int*)&val;
-        if (_canWrite) _value = value;
+        if (canWrite) _value = value;
     }
 
     void Reg::forceValue(int val) {
@@ -102,29 +123,21 @@ namespace registers {
     }
 
     int Reg::getValue() {
-        if (_canRead) return _value;
+        if (canRead) return _value;
         return 0;
     }
 
     float Reg::getFloat() {
-        if (_canRead) {
+        if (canRead) {
             float value = *(float*)&_value;
             return value;
         }
         return 0;
     }
 
-    int Reg::getMaxValue() {
-        return _maxValue;
-    }
-
-    int Reg::getMinValue() {
-        return _minValue;
-    }
-
     
 
-    Registers::Registers() {
+    /*Registers::Registers() {
 
     }
 
@@ -144,5 +157,5 @@ namespace registers {
         if (reg >= RegisterCount) return 0;
 
         return Regs[reg].getValue();
-    }
+    }*/
 }

@@ -68,18 +68,18 @@ namespace motor {
             components::MAX11645* ADC = NULL;
             components::MCP47A1* DAC = NULL;
             
-            const int RegSpeedReferenceSource       = 0;    // R/W  - Set the Speed Reference Source
+            const int RegSpeedReferenceSource       = 0;    // R/W  - Enum - Set the Speed Reference Source
             const int RegSpeedReferenceValue        = 1;    // R/W  - Float - Speed reference when SpeedReferenceSource is set to 1, -100-100%
             const int RegCurrentLimitValue          = 2;    // R/W  - Float - Set the current limit for the motor, in Amps
-            const int RegDigitaInput1Function       = 3;    // R/W  - Set the function of Digial Input 1
-            const int RegDigitaInput2Function       = 4;    // R/W  - Set the function of Digial Input 2
-            const int RegDigitaInput3Function       = 5;    // R/W  - Set the function of Digial Input 3
-            const int RegDigitaInput4Function       = 6;    // R/W  - Set the function of Digial Input 4
-            const int RegDigitaInput5Function       = 7;    // R/W  - Set the function of Digial Input 5
+            const int RegDigitaInput1Function       = 3;    // R/W  - Enum - Set the function of Digial Input 1
+            const int RegDigitaInput2Function       = 4;    // R/W  - Enum - Set the function of Digial Input 2
+            const int RegDigitaInput3Function       = 5;    // R/W  - Enum - Set the function of Digial Input 3
+            const int RegDigitaInput4Function       = 6;    // R/W  - Enum - Set the function of Digial Input 4
+            const int RegDigitaInput5Function       = 7;    // R/W  - Enum - Set the function of Digial Input 5
             const int RegMotorCurrentValue          = 8;    // R    - Float - Current in Amps the motor is drawing
             const int RegMotorOutputRate            = 9;    // R/W  - Float - Control how fast the speed setpoint ramps to the new reference, in %/sec
-            const int RegMotorEnabled               = 10;   // R/W  - Motor Enable status, 0 = Motor output is off, 1 = Motor output is on
-            const int RegMotorEnableSource          = 11;   // R/W  - Set the Motor Enable Source
+            const int RegMotorEnabled               = 10;   // R/W  - Enum - Motor Enable status, 0 = Motor output is off, 1 = Motor output is on
+            const int RegMotorEnableSource          = 11;   // R/W  - Enum - Set the Motor Enable Source
             const int RegInternalSetpoint1          = 12;   // R/W  - Float - Internal Speed Reference Setpoint 1
             const int RegInternalSetpoint2          = 13;   // R/W  - Float - Internal Speed Reference Setpoint 2
             const int RegInternalSetpoint3          = 14;   // R/W  - Float - Internal Speed Reference Setpoint 3

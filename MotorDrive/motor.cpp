@@ -60,8 +60,9 @@ namespace motor {
 
         std::map<int, registers::Reg>::iterator itr;
         for (itr = Registers.begin(); itr != Registers.end(); itr++) {
+            if (!itr->second.canSave) continue;
+
             std::string data = std::to_string(itr->first) + "\n";
-            //fr = storage_f_write(&Fil, data.c_str(), data.length(), &bw);
             bw = storage_f_puts(data.c_str(), &Fil);
             if (bw < 0) {
                 fr = storage_f_close(&Fil);
@@ -69,7 +70,6 @@ namespace motor {
             }
 
             data = std::to_string(itr->second.getValue()) + "\n";
-            //fr = storage_f_write(&Fil, data.c_str(), data.length(), &bw);
             bw = storage_f_puts(data.c_str(), &Fil);
             if (bw < 0) {
                 fr = storage_f_close(&Fil);
@@ -389,100 +389,105 @@ namespace motor {
         std::string desc;
 
         name = "Speed Reference Source";
-        desc = "R/W - Set the Speed Reference Source";
-        Registers[RegSpeedReferenceSource] = registers::Reg(name, desc, motor::SpeedReferenceSource::SpeedRefReg);
+        desc = "R/W - Enum - Set the Speed Reference Source";
+        Registers[RegSpeedReferenceSource] = registers::Reg(registers::RegisterType::IntType, name, desc, motor::SpeedReferenceSource::SpeedRefReg);
         
         name = "Speed Reference Value";
         desc = "R/W - Float - Speed reference when SpeedReferenceSource is set to register, -100-100%";
-        Registers[RegSpeedReferenceValue] = registers::Reg(name, desc, getRawFloat(0.0), 100, -100);
+        Registers[RegSpeedReferenceValue] = registers::Reg(registers::RegisterType::FloatType, name, desc, getRawFloat(0.0), 100, -100);
         
         name = "Current Limit Value";
         desc = "R/W - Float - Set the current limit for the motor, in Amps";
-        Registers[RegCurrentLimitValue] = registers::Reg(name, desc, getRawFloat(1.0));
+        Registers[RegCurrentLimitValue] = registers::Reg(registers::RegisterType::FloatType, name, desc, getRawFloat(1.0));
         
         name = "Digital Input 1 Function";
-        desc = "R/W - Set the function of Digial Input 1";
-        Registers[RegDigitaInput1Function] = registers::Reg(name, desc, motor::DigitalInFunction::MotorEnable);
+        desc = "R/W - Enum - Set the function of Digial Input 1";
+        Registers[RegDigitaInput1Function] = registers::Reg(registers::RegisterType::IntType, name, desc, motor::DigitalInFunction::MotorEnable);
         
         name = "Digital Input 2 Function";
-        desc = "R/W - Set the function of Digial Input 2";
-        Registers[RegDigitaInput2Function] = registers::Reg(name, desc, motor::DigitalInFunction::RunForward);
+        desc = "R/W - Enum - Set the function of Digial Input 2";
+        Registers[RegDigitaInput2Function] = registers::Reg(registers::RegisterType::IntType, name, desc, motor::DigitalInFunction::RunForward);
         
         name = "Digital Input 3 Function";
-        desc = "R/W - Set the function of Digial Input 3";
-        Registers[RegDigitaInput3Function] = registers::Reg(name, desc, motor::DigitalInFunction::NA);
+        desc = "R/W - Enum - Set the function of Digial Input 3";
+        Registers[RegDigitaInput3Function] = registers::Reg(registers::RegisterType::IntType, name, desc, motor::DigitalInFunction::NA);
         
         name = "Digital Input 4 Function";
-        desc = "R/W - Set the function of Digial Input 4";
-        Registers[RegDigitaInput4Function] = registers::Reg(name, desc, motor::DigitalInFunction::NA);
+        desc = "R/W - Enum - Set the function of Digial Input 4";
+        Registers[RegDigitaInput4Function] = registers::Reg(registers::RegisterType::IntType, name, desc, motor::DigitalInFunction::NA);
         
         name = "Digital Input 5 Function";
-        desc = "R/W - Set the function of Digial Input 5";
-        Registers[RegDigitaInput5Function] = registers::Reg(name, desc, motor::DigitalInFunction::NA);
+        desc = "R/W - Enum - Set the function of Digial Input 5";
+        Registers[RegDigitaInput5Function] = registers::Reg(registers::RegisterType::IntType, name, desc, motor::DigitalInFunction::NA);
         
         name = "Motor Current";
         desc = "R - Float - Current in Amps the motor is drawing";
-        Registers[RegMotorCurrentValue] = registers::Reg(name, desc, true, false);
+        Registers[RegMotorCurrentValue] = registers::Reg(registers::RegisterType::FloatType, name, desc, true, false);
+        Registers[RegMotorCurrentValue].canSave = false;
         
         name = "Motor Output Ramp";
         desc = "R/W - Float - Control how fast the speed setpoint ramps to the new reference, in %/sec";
-        Registers[RegMotorOutputRate] = registers::Reg(name, desc, true, true, getRawFloat(10.0), INT32_MAX, 0);
+        Registers[RegMotorOutputRate] = registers::Reg(registers::RegisterType::FloatType, name, desc, true, true, getRawFloat(10.0), INT32_MAX, 0);
 
         name = "Motor Enabled";
-        desc = "R/W - Motor Enable status, 0 = Motor output is off, 1 = Motor output is on";
-        Registers[RegMotorEnabled] = registers::Reg(name, desc, true, true, 0, 1, 0);
+        desc = "R/W - Enum - Motor Enable status, 0 = Motor output is off, 1 = Motor output is on";
+        Registers[RegMotorEnabled] = registers::Reg(registers::RegisterType::IntType, name, desc, true, true, 0, 1, 0);
+        Registers[RegMotorEnabled].canSave = false;
 
         name = "Motor Enable Source";
-        desc = "R/W - Set the Motor Enable Source";
-        Registers[RegMotorEnableSource] = registers::Reg(name, desc, true, true, motor::MotorEnableSource::MotorEnableReg);
+        desc = "R/W - Enum - Set the Motor Enable Source";
+        Registers[RegMotorEnableSource] = registers::Reg(registers::RegisterType::IntType, name, desc, true, true, motor::MotorEnableSource::MotorEnableReg);
 
         name = "Internal Speed Reference Setpoint 1";
         desc = "R/W - Float - Internal Speed Reference Setpoint 1";
-        Registers[RegInternalSetpoint1] = registers::Reg(name, desc, true, true, getRawFloat(0.0), 100, -100);
+        Registers[RegInternalSetpoint1] = registers::Reg(registers::RegisterType::FloatType, name, desc, true, true, getRawFloat(0.0), 100, -100);
 
         name = "Internal Speed Reference Setpoint 2";
         desc = "R/W - Float - Internal Speed Reference Setpoint 2";
-        Registers[RegInternalSetpoint2] = registers::Reg(name, desc, true, true, getRawFloat(0.0), 100, -100);
+        Registers[RegInternalSetpoint2] = registers::Reg(registers::RegisterType::FloatType, name, desc, true, true, getRawFloat(0.0), 100, -100);
 
         name = "Internal Speed Reference Setpoint 3";
         desc = "R/W - Float - Internal Speed Reference Setpoint 3";
-        Registers[RegInternalSetpoint3] = registers::Reg(name, desc, true, true, getRawFloat(0.0), 100, -100);
+        Registers[RegInternalSetpoint3] = registers::Reg(registers::RegisterType::FloatType, name, desc, true, true, getRawFloat(0.0), 100, -100);
 
         name = "Internal Speed Reference Setpoint 4";
         desc = "R/W - Float - Internal Speed Reference Setpoint 4";
-        Registers[RegInternalSetpoint4] = registers::Reg(name, desc, true, true, getRawFloat(0.0), 100, -100);
+        Registers[RegInternalSetpoint4] = registers::Reg(registers::RegisterType::FloatType, name, desc, true, true, getRawFloat(0.0), 100, -100);
 
         name = "Internal Speed Reference Setpoint 5";
         desc = "R/W - Float - Internal Speed Reference Setpoint 5";
-        Registers[RegInternalSetpoint5] = registers::Reg(name, desc, true, true, getRawFloat(0.0), 100, -100);
+        Registers[RegInternalSetpoint5] = registers::Reg(registers::RegisterType::FloatType, name, desc, true, true, getRawFloat(0.0), 100, -100);
 
         name = "Speed Reference Analog Input";
         desc = "R - Float - Speed reference from Analog Input, -100-100%";
-        Registers[RegSpeedReferenceAnalog] = registers::Reg(name, desc, true, false, getRawFloat(0.0), 100, -100);
+        Registers[RegSpeedReferenceAnalog] = registers::Reg(registers::RegisterType::FloatType, name, desc, true, false, getRawFloat(0.0), 100, -100);
+        Registers[RegSpeedReferenceAnalog].canSave = false;
 
         name = "Speed Reference";
         desc = "R - Float - Speed reference used as the speed setpoint, -100-100%";
-        Registers[RegSpeedReference] = registers::Reg(name, desc, true, false, getRawFloat(0.0), 100, -100);
+        Registers[RegSpeedReference] = registers::Reg(registers::RegisterType::FloatType, name, desc, true, false, getRawFloat(0.0), 100, -100);
+        Registers[RegSpeedReference].canSave = false;
 
         name = "Analog Scale Max";
         desc = "R/W - Float - Voltage level for 100% speed, -10V - 10V";
-        Registers[RegSpeedRefAnalogScaleMax] = registers::Reg(name, desc, true, true, getRawFloat(10.0), 10, -10);
+        Registers[RegSpeedRefAnalogScaleMax] = registers::Reg(registers::RegisterType::FloatType, name, desc, true, true, getRawFloat(10.0), 10, -10);
 
         name = "Analog Scale Min";
         desc = "R/W - Float - Voltage level for -100% speed, -10V - 10V";
-        Registers[RegSpeedRefAnalogScaleMin] = registers::Reg(name, desc, true, true, getRawFloat(-10.0), 10, -10);
+        Registers[RegSpeedRefAnalogScaleMin] = registers::Reg(registers::RegisterType::FloatType, name, desc, true, true, getRawFloat(-10.0), 10, -10);
 
         name = "Analog Scale Zero";
         desc = "R/W - Float - Voltage level for 0% speed, -10V - 10V";
-        Registers[RegSpeedRefAnalogScaleZero] = registers::Reg(name, desc, true, true, getRawFloat(0.0), 10, -10);
+        Registers[RegSpeedRefAnalogScaleZero] = registers::Reg(registers::RegisterType::FloatType, name, desc, true, true, getRawFloat(0.0), 10, -10);
 
         name = "Analog Input Voltage";
         desc = "R - Float - Voltage level on the analog input";
-        Registers[RegAnalogInVoltage] = registers::Reg(name, desc, true, false);
+        Registers[RegAnalogInVoltage] = registers::Reg(registers::RegisterType::FloatType, name, desc, true, false);
+        Registers[RegAnalogInVoltage].canSave = false;
 
         name = "Analog Input Deadband";
         desc = "R/W - Float - Voltage window around the zero level to be ignored";
-        Registers[RegAnalogInDeadband] = registers::Reg(name, desc, true, true, getRawFloat(0.0));
+        Registers[RegAnalogInDeadband] = registers::Reg(registers::RegisterType::FloatType, name, desc, true, true, getRawFloat(0.0));
         
         //name = "";
         //desc = "";
