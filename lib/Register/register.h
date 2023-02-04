@@ -40,9 +40,6 @@ namespace registers {
         private:
             RegisterType _type;
             int _value;
-
-            // TODO: add data type, e.g. int, float, ...
-            // TODO: add saveable flag, if false will not save to disk during saves
     };
 
     /*class Registers {

@@ -177,6 +177,32 @@ namespace shell {
         return res;
     }
     
+    std::string shell_getRegsAll(std::vector<std::string> args, motor::Motor* mtr) {
+        if (args.size() < 1) return 0;
+
+        std::string res;
+        std::map<int, registers::Reg>::iterator itr;
+        
+        for (itr = mtr->Registers.begin(); itr != mtr->Registers.end(); itr++) {
+            int reg = itr->first;
+
+            // Add register index
+            res += std::to_string(reg) + " ";
+
+            // Add register value
+            if (mtr->Registers[reg].getType() == registers::RegisterType::IntType) {
+                res += std::to_string(mtr->Registers[reg].getValue());
+            }
+            else if (mtr->Registers[reg].getType() == registers::RegisterType::FloatType) {
+                res += std::to_string(mtr->Registers[reg].getFloat());
+            }
+
+            res += " ";
+        }
+
+        return res;
+    }
+    
     void shell_setPWM(std::vector<std::string> args) {
         // arg 1 = gpio num
         // arg 2 = start/stop = 1/0

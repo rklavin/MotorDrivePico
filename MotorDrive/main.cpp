@@ -42,6 +42,7 @@ int main(void) {
 	int err = 0;
 	bool readAnalog = false;
 	bool readScaled = false;
+	bool streamRegisters = false;
 
 	init_board();
 
@@ -97,6 +98,7 @@ int main(void) {
 		printf("Init Complete\n");
 
 	int time = to_ms_since_boot(get_absolute_time());
+	int streamTime = to_ms_since_boot(get_absolute_time());
 
 	while (true) {
 		double val;
@@ -169,6 +171,15 @@ int main(void) {
 				}
 				else if (cmd == "RESETREGS") {
 					mtr.resetRegisters();
+				}
+				else if (cmd == "GETALLREGS") {
+					std::string got = shell::shell_getRegsAll(command, &mtr);
+					//printf("Registers: ");
+					printf(got.c_str());
+					printf("\n");
+				}
+				else if (cmd == "STREAMREGS") {
+					streamRegisters = !streamRegisters;
 				}
 			}
 
@@ -261,6 +272,16 @@ int main(void) {
 		if (readScaled) {
 			val = ADC.readScaled();
 			printf("ADC Scaled Value: %f\n", val);
+		}
+		
+		if (streamRegisters) {
+			if (to_ms_since_boot(get_absolute_time()) - streamTime > 50) {
+				streamTime = to_ms_since_boot(get_absolute_time());
+				std::vector<std::string> dummy = { "STREAMREGS" };
+				std::string got = shell::shell_getRegsAll(dummy, &mtr);
+				printf(got.c_str());
+				printf("\n");
+			}
 		}
 
 		sleep_ms(5);

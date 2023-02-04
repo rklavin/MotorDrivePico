@@ -21,8 +21,8 @@
 #endif
 
 /* Definitions of physical drive number for each drive */
-#define DEV_ROM_1	0	// Drive 1 in ROM used to store executing CodeLINK script
-#define DEV_ROM_2	1	// Drive 2 in ROM for use in executing CodeLINK script
+#define DEV_ROM_1	0	// Drive 1 in ROM used to store executing script
+#define DEV_ROM_2	1	// Drive 2 in ROM for use in executing script
 
 DSTATUS ROM_1_Status;
 DSTATUS ROM_2_Status;
