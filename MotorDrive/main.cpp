@@ -99,6 +99,7 @@ int main(void) {
 
 	int time = to_ms_since_boot(get_absolute_time());
 	int streamTime = to_ms_since_boot(get_absolute_time());
+	std::vector<std::string> streamCommand;
 
 	while (true) {
 		double val;
@@ -179,6 +180,8 @@ int main(void) {
 					printf("\n");
 				}
 				else if (cmd == "STREAMREGS") {
+					streamCommand.clear();
+					streamCommand = command;
 					streamRegisters = !streamRegisters;
 				}
 			}
@@ -277,8 +280,8 @@ int main(void) {
 		if (streamRegisters) {
 			if (to_ms_since_boot(get_absolute_time()) - streamTime > 50) {
 				streamTime = to_ms_since_boot(get_absolute_time());
-				std::vector<std::string> dummy = { "STREAMREGS" };
-				std::string got = shell::shell_getRegsAll(dummy, &mtr);
+				//std::vector<std::string> dummy = { "STREAMREGS" };
+				std::string got = shell::shell_getRegsAny(streamCommand, &mtr);
 				printf(got.c_str());
 				printf("\n");
 			}

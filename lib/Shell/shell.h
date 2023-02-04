@@ -19,5 +19,6 @@ namespace shell {
     std::string shell_getRegs(std::vector<std::string> args, motor::Motor* mtr);
     std::string shell_getRegsFloat(std::vector<std::string> args, motor::Motor* mtr);
     std::string shell_getRegsAll(std::vector<std::string> args, motor::Motor* mtr);
+    std::string shell_getRegsAny(std::vector<std::string> args, motor::Motor* mtr);
     void shell_setPWM(std::vector<std::string> args);
 }

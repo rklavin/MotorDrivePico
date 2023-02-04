@@ -182,7 +182,7 @@ namespace shell {
 
         std::string res;
         std::map<int, registers::Reg>::iterator itr;
-        
+
         for (itr = mtr->Registers.begin(); itr != mtr->Registers.end(); itr++) {
             int reg = itr->first;
 
@@ -198,6 +198,33 @@ namespace shell {
             }
 
             res += " ";
+        }
+
+        return res;
+    }
+    
+    std::string shell_getRegsAny(std::vector<std::string> args, motor::Motor* mtr) {
+        // If no registers were added, try sending all
+        if (args.size() < 2) return shell_getRegsAll(args, mtr);
+
+        int regs = args.size() - 1;
+        std::string res;
+
+        for (int i = 0; i < regs; i += 1) {
+            int reg = string_to_int(args[i + 1]);
+            res += std::to_string(reg) + " ";
+            if (mtr->Registers.find(reg) == mtr->Registers.end()) {
+                res += std::to_string(0);
+            } else {
+                if (mtr->Registers[reg].getType() == registers::RegisterType::IntType) {
+                    res += std::to_string(mtr->Registers[reg].getValue());
+                }
+                else if (mtr->Registers[reg].getType() == registers::RegisterType::FloatType) {
+                    res += std::to_string(mtr->Registers[reg].getFloat());
+                }
+            }
+
+            if (i + 1 < regs) res += " ";
         }
 
         return res;
