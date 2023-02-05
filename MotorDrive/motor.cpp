@@ -29,6 +29,8 @@ namespace motor {
     }
 
     void Motor::update() {
+        updateIO();
+        
         // Read Analog Input to Speed Reference Analog register
         updateRefAnalog();
 
@@ -215,7 +217,7 @@ namespace motor {
         bool reverseUsed = checkDigitalFunction(DigitalInFunction::RunReverse, RegRunReverse);
         float maxRamp = 100;
         float minRamp = -100;
-        
+
         if (forwardUsed) {
             maxRamp = Registers[RegRunForward].getValue() ? 100 : 0;
         }
@@ -300,6 +302,15 @@ namespace motor {
         
         // Set PWM
         setPWM(true, 20000, enabled ? std::abs(speedRef) : 0);
+    }
+
+    void Motor::updateIO() {
+        // Digital I/O
+        Registers[RegDigitalInput1].forceValue(gpio_get(PIN_DIN_1));
+        Registers[RegDigitalInput2].forceValue(gpio_get(PIN_DIN_2));
+        Registers[RegDigitalInput3].forceValue(gpio_get(PIN_DIN_3));
+        Registers[RegDigitalInput4].forceValue(gpio_get(PIN_DIN_4));
+        Registers[RegDigitalInput5].forceValue(gpio_get(PIN_DIN_5));
     }
 
     int Motor::checkDigitalInMotorEnable() {
@@ -565,6 +576,26 @@ namespace motor {
         name = "Reverse Inhibit Status";
         desc = "R - Bool - Reverse Inhibit status, 0 = Not inhibited, 1 = Inihibited";
         Registers[RegReverseInhibit] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
+
+        name = "Digital Input 1";
+        desc = "R - Bool - Status of Digital Input 1, 0 = Off, 1 = On";
+        Registers[RegDigitalInput1] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
+
+        name = "Digital Input 2";
+        desc = "R - Bool - Status of Digital Input 2, 0 = Off, 1 = On";
+        Registers[RegDigitalInput2] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
+
+        name = "Digital Input 3";
+        desc = "R - Bool - Status of Digital Input 3, 0 = Off, 1 = On";
+        Registers[RegDigitalInput3] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
+
+        name = "Digital Input 4";
+        desc = "R - Bool - Status of Digital Input 4, 0 = Off, 1 = On";
+        Registers[RegDigitalInput4] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
+
+        name = "Digital Input 5";
+        desc = "R - Bool - Status of Digital Input 5, 0 = Off, 1 = On";
+        Registers[RegDigitalInput5] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
         
         //name = "";
         //desc = "";

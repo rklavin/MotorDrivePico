@@ -95,6 +95,11 @@ namespace motor {
             const int RegRunReverse                 = 25;   // R    - Bool - Run Reverse status, 0 = Not allowed, 1 = Allowed
             const int RegForwardInhibit             = 26;   // R    - Bool - Forward Inhibit status, 0 = Not inhibited, 1 = Inihibited
             const int RegReverseInhibit             = 27;   // R    - Bool - Reverse Inhibit status, 0 = Not inhibited, 1 = Inihibited
+            const int RegDigitalInput1              = 28;   // R    - Bool - Status of Digital Input 1, 0 = Off, 1 = On
+            const int RegDigitalInput2              = 29;   // R    - Bool - Status of Digital Input 2, 0 = Off, 1 = On
+            const int RegDigitalInput3              = 30;   // R    - Bool - Status of Digital Input 3, 0 = Off, 1 = On
+            const int RegDigitalInput4              = 31;   // R    - Bool - Status of Digital Input 4, 0 = Off, 1 = On
+            const int RegDigitalInput5              = 32;   // R    - Bool - Status of Digital Input 5, 0 = Off, 1 = On
 
             int init();
             void update();
@@ -118,9 +123,12 @@ namespace motor {
             void updateCurrent();
             void updateEnable();
             void updateMotorControl();
+            void updateIO();
 
             int checkDigitalInMotorEnable();
             int checkDigitalInReferenceSource();
+            // Returns true if any digital inputs are assigned the function in func
+            // Forces the result of the digital inputs into register reg
             bool checkDigitalFunction(DigitalInFunction func, int reg);
             void setPWM(int enable, double frequency, double duty);
     };
