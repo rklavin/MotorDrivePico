@@ -564,38 +564,47 @@ namespace motor {
         name = "Run Forward Status";
         desc = "R - Bool - Run Forward status, 0 = Not allowed, 1 = Allowed";
         Registers[RegRunForward] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
+        Registers[RegRunForward].canSave = false;
 
         name = "Run Reverse Status";
         desc = "R - Bool - Run Reverse status, 0 = Not allowed, 1 = Allowed";
         Registers[RegRunReverse] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
+        Registers[RegRunReverse].canSave = false;
 
         name = "Forward Inhibit Status";
         desc = "R - Bool - Forward Inhibit status, 0 = Not inhibited, 1 = Inihibited";
         Registers[RegForwardInhibit] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
+        Registers[RegForwardInhibit].canSave = false;
 
         name = "Reverse Inhibit Status";
         desc = "R - Bool - Reverse Inhibit status, 0 = Not inhibited, 1 = Inihibited";
         Registers[RegReverseInhibit] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
+        Registers[RegReverseInhibit].canSave = false;
 
         name = "Digital Input 1";
         desc = "R - Bool - Status of Digital Input 1, 0 = Off, 1 = On";
         Registers[RegDigitalInput1] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
+        Registers[RegDigitalInput1].canSave = false;
 
         name = "Digital Input 2";
         desc = "R - Bool - Status of Digital Input 2, 0 = Off, 1 = On";
         Registers[RegDigitalInput2] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
+        Registers[RegDigitalInput2].canSave = false;
 
         name = "Digital Input 3";
         desc = "R - Bool - Status of Digital Input 3, 0 = Off, 1 = On";
         Registers[RegDigitalInput3] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
+        Registers[RegDigitalInput3].canSave = false;
 
         name = "Digital Input 4";
         desc = "R - Bool - Status of Digital Input 4, 0 = Off, 1 = On";
         Registers[RegDigitalInput4] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
+        Registers[RegDigitalInput4].canSave = false;
 
         name = "Digital Input 5";
         desc = "R - Bool - Status of Digital Input 5, 0 = Off, 1 = On";
         Registers[RegDigitalInput5] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
+        Registers[RegDigitalInput5].canSave = false;
         
         //name = "";
         //desc = "";
