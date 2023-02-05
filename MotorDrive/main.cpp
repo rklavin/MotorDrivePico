@@ -184,9 +184,20 @@ int main(void) {
 					printf("\n");
 				}
 				else if (cmd == "STREAMREGS") {
+					std::string cmd2 = command[1];
+					for (int i = 0; i < cmd2.length(); i += 1) {
+						cmd2[i] = toupper(cmd2[i]);
+					}
+
+					if (cmd2 == "ON")
+						streamRegisters = true;
+					else
+						streamRegisters = false;
+
+					command.erase(command.begin() + 1);
+
 					streamCommand.clear();
 					streamCommand = command;
-					streamRegisters = !streamRegisters;
 				}
 			}
 

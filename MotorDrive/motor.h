@@ -66,6 +66,13 @@ namespace motor {
 
             components::MAX11645* ADC = NULL;
             components::MCP47A1* DAC = NULL;
+
+            // TODO: Add Relay Function
+            // Register to choose when the relay turns on/off
+            // Register to show status of relay
+
+            // TODO: Add relay logic
+            // To turn on: 100% PWM for 100ms, then 50% PWM to keep on
             
             const int RegSpeedReferenceSource       = 0;    // R/W  - Enum - Set the Speed Reference Source
             const int RegSpeedReferenceValue        = 1;    // R/W  - Float - Speed reference when SpeedReferenceSource is set to 1, -100-100%
