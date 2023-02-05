@@ -10,11 +10,11 @@
 #include "hardware/pwm.h"
 
 #include "config.h"
-#include "Interface/interface.h"
+//#include "Interface/interface.h"
 #include "Storage/storage.h"
 
 #include "Components/components.h"
-#include "Components/DRV8876.h"
+//#include "Components/DRV8876.h"
 #include "Components/MAX11645.h"
 #include "Components/MCP47A1.h"
 
@@ -22,23 +22,14 @@
 #include "Shell/shell.h"
 #include "motor.h"
 
-// TODO: Add a streaming mode
-//		 Will simply transmit all registers and their data every x msec
-
 // TODO: Move serial communication to core 2
 //       Core 1 to only be used for motor logic
 
-//void led_blinking_task(int blink);
+void init_board();
 void init_config();
 
 int main(void) {
 	// Main loop
-	char cmd = 'z';
-	char buff[256];
-
-	UINT bw;
-	FRESULT fr;
-	FIL Fil;			// File object needed for each open file
 	int err = 0;
 	bool readAnalog = false;
 	bool readScaled = false;
@@ -46,10 +37,10 @@ int main(void) {
 
 	init_board();
 
-	for (int i = 0; i < 5; i += 1) {
+	/*for (int i = 0; i < 5; i += 1) {
 		printf("%d\n", 5 - i);
 		interface_sleep_ms(1000);
-	}
+	}*/
 
 	// Initialize GPIO
 	printf("GPIO Init...\n");
@@ -80,11 +71,12 @@ int main(void) {
 	printf("File System Complete\n");
 
 	// Components
-	components::DRV8876 MotorDriver("Motor Driver");
+	//components::DRV8876 MotorDriver("Motor Driver");
 	components::MAX11645 ADC("Analog to Digital Converter");
 	ADC.bus = i2c0;
 	ADC.scale_M = 12.288;
 	components::MCP47A1 DAC("Digital to Analog Converter");
+	DAC.bus = i2c0;
 
 	motor::Motor mtr;
 	mtr.ADC = &ADC;
@@ -102,8 +94,6 @@ int main(void) {
 	std::vector<std::string> streamCommand;
 
 	while (true) {
-		double val;
-
 		if (to_ms_since_boot(get_absolute_time()) - time > 100) {
 			std::vector<std::string> command = console::split_command_and_args(20);
 			time = to_ms_since_boot(get_absolute_time());
@@ -191,89 +181,13 @@ int main(void) {
 
 		mtr.update();
 
-		// cmd = (char)interface_getchar_timeout_ms(100);
-		// char* fileName;
-		// int err;
-		// double val;
-		// switch(cmd) {
-		// 	/*case 'y':
-		// 		interface_getline_timeout_ms(100, '\n', buff, 256);
-		// 		printf("YModem receive error: ");
-		// 		printf("%d\n", err);
-		// 		break;
-
-		// 	case 's':
-		// 		interface_getline_timeout_ms(100, '\n', buff, 256);
-		// 		err = print_file(buff);
-		// 		printf("YModem send error: ");
-		// 		printf("%d\n", err);
-		// 		break;*/
-
-		// 	case 's':
-		// 		// set a digital output
-		// 		break;
-
-		// 	case 'r':
-		// 		// read a digital input
-		// 		break;
-
-		// 	case 'l':
-        // 		strcpy(buff, "/");
-		// 		storage_scan_files(buff);
-		// 		break;
-
-		// 	case 'm':
-		// 		interface_getline_timeout_ms(100, '\n', buff, 256);
-		// 		fr = storage_f_open(&Fil, buff, FA_WRITE | FA_CREATE_ALWAYS);	// Create a file
-		// 		if (fr == FR_OK) {
-		// 			//storage_f_write(&Fil, "It works!\r\n", 11, &bw);	// Write data to the file
-		// 			fr = storage_f_close(&Fil);							// Close the file
-		// 		} else {
-		// 			printf("File write result: ");
-		// 			printf("%d\n", fr);
-		// 		}
-		// 		break;
-
-		// 	case 'd':
-		// 		interface_getline_timeout_ms(100, '\n', buff, 256);
-		// 		fr = f_unlink(buff);
-		// 		printf("File unlink result: ");
-		// 		printf("%d\n", fr);
-		// 		break;
-
-		// 	/*case 'r':
-		// 		interface_getline_timeout_ms(100, '\n', buff, 256);
-		// 		//CodeRun(buff);
-		// 		break;*/
-
-		// 	case 'i':
-		// 		// try reading ADC
-		// 		err = ADC.init();
-		// 		printf("ADC Init: %d\n", err);
-		// 		break;
-
-		// 	case 'a':
-		// 		// try reading ADC
-		// 		//val = ADC.read();
-		// 		//printf("ADC Value: %f\n", val);
-		// 		readAnalog = !readAnalog;
-		// 		break;
-
-		// 	case 'b':
-		// 		// try reading ADC
-		// 		//val = ADC.readScaled();
-		// 		//printf("ADC Scaled Value: %f\n", val);
-		// 		readScaled = !readScaled;
-		// 		break;
-		// }
-
 		if (readAnalog) {
-			val = ADC.read();
+			double val = ADC.read();
 			printf("ADC Value: %f\n", val);
 		}
 
 		if (readScaled) {
-			val = ADC.readScaled();
+			double val = ADC.readScaled();
 			printf("ADC Scaled Value: %f\n", val);
 		}
 		
@@ -288,36 +202,16 @@ int main(void) {
 		}
 
 		sleep_ms(5);
-
-		/*strcpy(buff, "");
-		interface_getline_timeout_ms(100, '\n', buff, 256);
-		if (!strcmp(buff, "")) printf(buff);*/
-		//led_blinking_task(500);
-	}
-
-	while (true) {
-		//led_blinking_task(250);
 	}
 
 	return 0;
 }
 
-//--------------------------------------------------------------------+
-// BLINKING TASK
-//--------------------------------------------------------------------+
-/*void led_blinking_task(int blink)
-{
-	static uint32_t start_ms = 0;
-	static bool led_state = false;
-
-	// Blink every interval ms
-	int time = to_ms_since_boot(get_absolute_time()); 
-	if ((time - start_ms) < blink) return; // not enough time
-	start_ms = time;
-
-	gpio_put(PICO_DEFAULT_LED_PIN, led_state);
-	led_state = 1 - led_state; // toggle
-}*/
+void init_board() {
+	// Initialize RP2040
+	stdio_init_all();
+	//uart_init(UART_ID, BAUD_RATE);
+}
 
 void init_config() {
     gpio_init(PICO_DEFAULT_LED_PIN);

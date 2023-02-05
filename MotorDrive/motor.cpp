@@ -395,10 +395,11 @@ namespace motor {
         name = "Speed Reference Value";
         desc = "R/W - Float - Speed reference when SpeedReferenceSource is set to register, -100-100%";
         Registers[RegSpeedReferenceValue] = registers::Reg(registers::RegisterType::FloatType, name, desc, getRawFloat(0.0), 100, -100);
+        //Registers[RegSpeedReferenceValue].canSave = false;
         
         name = "Current Limit Value";
         desc = "R/W - Float - Set the current limit for the motor, in Amps";
-        Registers[RegCurrentLimitValue] = registers::Reg(registers::RegisterType::FloatType, name, desc, getRawFloat(1.0));
+        Registers[RegCurrentLimitValue] = registers::Reg(registers::RegisterType::FloatType, name, desc, getRawFloat(1.0), getRawFloat(maxCurrent), 0);
         
         name = "Digital Input 1 Function";
         desc = "R/W - Enum - Set the function of Digial Input 1";
