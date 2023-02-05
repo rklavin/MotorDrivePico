@@ -210,6 +210,32 @@ namespace motor {
             ramp = val;
         }
 
+        // Prevent ramp if not run forward/reverse
+        bool forwardUsed = checkDigitalFunction(DigitalInFunction::RunForward, RegRunForward);
+        bool reverseUsed = checkDigitalFunction(DigitalInFunction::RunReverse, RegRunReverse);
+        float maxRamp = 100;
+        float minRamp = -100;
+        
+        if (forwardUsed) {
+            maxRamp = Registers[RegRunForward].getValue() ? 100 : 0;
+        }
+        if (reverseUsed) {
+            minRamp = Registers[RegRunReverse].getValue() ? -100 : 0;
+        }
+        ramp = std::clamp(ramp, minRamp, maxRamp);
+
+        // Prevent enable if forward/reverse inhibit is on
+        forwardUsed = checkDigitalFunction(DigitalInFunction::ForwardInhibit, RegForwardInhibit);
+        reverseUsed = checkDigitalFunction(DigitalInFunction::ReverseInhibit, RegReverseInhibit);
+
+        if (forwardUsed) {
+            maxRamp = Registers[RegForwardInhibit].getValue() ? 0 : 100;
+        }
+        if (reverseUsed) {
+            minRamp = Registers[RegReverseInhibit].getValue() ? 0 : -100;
+        }
+        ramp = std::clamp(ramp, minRamp, maxRamp);
+
         Registers[RegSpeedReference].forceFloat(ramp);
 
         time = to_ms_since_boot(get_absolute_time());
@@ -348,6 +374,40 @@ namespace motor {
         }
 
         return 1;
+    }
+
+    bool Motor::checkDigitalFunction(DigitalInFunction func, int reg) {
+        int val = 0;
+        bool used = false;
+
+        if (Registers[RegDigitaInput1Function].getValue() == func) {
+            val = gpio_get(PIN_DIN_1);
+            used = true;
+        }
+
+        if (Registers[RegDigitaInput2Function].getValue() == func) {
+            val |= gpio_get(PIN_DIN_2);
+            used = true;
+        }
+
+        if (Registers[RegDigitaInput3Function].getValue() == func) {
+            val |= gpio_get(PIN_DIN_3);
+            used = true;
+        }
+
+        if (Registers[RegDigitaInput4Function].getValue() == func) {
+            val |= gpio_get(PIN_DIN_4);
+            used = true;
+        }
+
+        if (Registers[RegDigitaInput5Function].getValue() == func) {
+            val |= gpio_get(PIN_DIN_5);
+            used = true;
+        }
+
+        if (used) Registers[reg].forceValue(val);
+
+        return used;
     }
 
     void Motor::setPWM(int enable, double frequency, double duty) {
@@ -489,6 +549,22 @@ namespace motor {
         name = "Analog Input Deadband";
         desc = "R/W - Float - Voltage window around the zero level to be ignored";
         Registers[RegAnalogInDeadband] = registers::Reg(registers::RegisterType::FloatType, name, desc, true, true, getRawFloat(0.0));
+
+        name = "Run Forward Status";
+        desc = "R - Bool - Run Forward status, 0 = Not allowed, 1 = Allowed";
+        Registers[RegRunForward] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
+
+        name = "Run Reverse Status";
+        desc = "R - Bool - Run Reverse status, 0 = Not allowed, 1 = Allowed";
+        Registers[RegRunReverse] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
+
+        name = "Forward Inhibit Status";
+        desc = "R - Bool - Forward Inhibit status, 0 = Not inhibited, 1 = Inihibited";
+        Registers[RegForwardInhibit] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
+
+        name = "Reverse Inhibit Status";
+        desc = "R - Bool - Reverse Inhibit status, 0 = Not inhibited, 1 = Inihibited";
+        Registers[RegReverseInhibit] = registers::Reg(registers::RegisterType::BoolType, name, desc, true, false, 0);
         
         //name = "";
         //desc = "";

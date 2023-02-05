@@ -10,7 +10,7 @@
 #include "hardware/pwm.h"
 
 #include "config.h"
-//#include "Interface/interface.h"
+#include "Interface/interface.h"
 #include "Storage/storage.h"
 
 #include "Components/components.h"
@@ -25,7 +25,7 @@
 // TODO: Move serial communication to core 2
 //       Core 1 to only be used for motor logic
 
-void init_board();
+//void init_board();
 void init_config();
 
 int main(void) {
@@ -76,18 +76,32 @@ int main(void) {
 	ADC.bus = i2c0;
 	ADC.scale_M = 12.288;
 	components::MCP47A1 DAC("Digital to Analog Converter");
-	DAC.bus = i2c0;
+	//DAC.bus = i2c0;
 
 	motor::Motor mtr;
 	mtr.ADC = &ADC;
 	mtr.DAC = &DAC;
 
 	printf("Init Components...\n");
+	printf("Init ADC...\n");
 	err = ADC.init();
+	if (err != 1)
+		printf("ADC Init error\n");
+
+	printf("Init DAC...\n");
 	err &= DAC.init();
+	if (err != 1)
+		printf("DAC Init error\n");
+
+	printf("Init Motor...\n");
 	err &= mtr.init();
+	if (err != 1)
+		printf("Motor Init error\n");
+
 	if (err == 1)
 		printf("Init Complete\n");
+	else
+		printf("Component Init Failed\n");
 
 	int time = to_ms_since_boot(get_absolute_time());
 	int streamTime = to_ms_since_boot(get_absolute_time());
@@ -207,11 +221,11 @@ int main(void) {
 	return 0;
 }
 
-void init_board() {
+/*void init_board() {
 	// Initialize RP2040
 	stdio_init_all();
 	//uart_init(UART_ID, BAUD_RATE);
-}
+}*/
 
 void init_config() {
     gpio_init(PICO_DEFAULT_LED_PIN);

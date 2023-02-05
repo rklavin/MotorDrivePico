@@ -7,6 +7,7 @@ namespace registers {
         IntType,
         UintType,
         FloatType,
+        BoolType,
     };
 
     class Reg {

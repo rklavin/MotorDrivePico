@@ -196,6 +196,9 @@ namespace shell {
             else if (mtr->Registers[reg].getType() == registers::RegisterType::FloatType) {
                 res += std::to_string(mtr->Registers[reg].getFloat());
             }
+            else if (mtr->Registers[reg].getType() == registers::RegisterType::BoolType) {
+                res += std::to_string(mtr->Registers[reg].getValue());
+            }
 
             res += " ";
         }
@@ -221,6 +224,9 @@ namespace shell {
                 }
                 else if (mtr->Registers[reg].getType() == registers::RegisterType::FloatType) {
                     res += std::to_string(mtr->Registers[reg].getFloat());
+                }
+                else if (mtr->Registers[reg].getType() == registers::RegisterType::BoolType) {
+                    res += std::to_string(mtr->Registers[reg].getValue());
                 }
             }
 

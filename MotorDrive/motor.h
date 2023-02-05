@@ -26,7 +26,6 @@ namespace motor {
         updateMotorControl,
     };
 
-    // TODO: add logic for Run forward/reverse and forward/reverse prohibit functions
     enum DigitalInFunction {
         NA,
         MotorEnable,
@@ -78,7 +77,7 @@ namespace motor {
             const int RegDigitaInput5Function       = 7;    // R/W  - Enum - Set the function of Digial Input 5
             const int RegMotorCurrentValue          = 8;    // R    - Float - Current in Amps the motor is drawing
             const int RegMotorOutputRate            = 9;    // R/W  - Float - Control how fast the speed setpoint ramps to the new reference, in %/sec
-            const int RegMotorEnabled               = 10;   // R/W  - Enum - Motor Enable status, 0 = Motor output is off, 1 = Motor output is on
+            const int RegMotorEnabled               = 10;   // R/W  - Bool - Motor Enable status, 0 = Motor output is off, 1 = Motor output is on
             const int RegMotorEnableSource          = 11;   // R/W  - Enum - Set the Motor Enable Source
             const int RegInternalSetpoint1          = 12;   // R/W  - Float - Internal Speed Reference Setpoint 1
             const int RegInternalSetpoint2          = 13;   // R/W  - Float - Internal Speed Reference Setpoint 2
@@ -92,6 +91,10 @@ namespace motor {
             const int RegSpeedRefAnalogScaleZero    = 21;   // R/W  - Float - Voltage level for 0% speed, -10V - 10V
             const int RegAnalogInVoltage            = 22;   // R    - Float - Voltage level on the analog input
             const int RegAnalogInDeadband           = 23;   // R/W  - Float - Voltage window around the zero level to be ignored
+            const int RegRunForward                 = 24;   // R    - Bool - Run Forward status, 0 = Not allowed, 1 = Allowed
+            const int RegRunReverse                 = 25;   // R    - Bool - Run Reverse status, 0 = Not allowed, 1 = Allowed
+            const int RegForwardInhibit             = 26;   // R    - Bool - Forward Inhibit status, 0 = Not inhibited, 1 = Inihibited
+            const int RegReverseInhibit             = 27;   // R    - Bool - Reverse Inhibit status, 0 = Not inhibited, 1 = Inihibited
 
             int init();
             void update();
@@ -118,6 +121,7 @@ namespace motor {
 
             int checkDigitalInMotorEnable();
             int checkDigitalInReferenceSource();
+            bool checkDigitalFunction(DigitalInFunction func, int reg);
             void setPWM(int enable, double frequency, double duty);
     };
 }
