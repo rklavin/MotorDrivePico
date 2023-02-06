@@ -42,20 +42,20 @@ extern char __flash_binary_end;
 /*-----------------------------------------------------------------------*/
 
 DSTATUS disk_status (
-	BYTE pdrv		/* Physical drive nmuber to identify the drive */
+    BYTE pdrv		/* Physical drive nmuber to identify the drive */
 )
 {
-	DSTATUS stat = 0;
+    DSTATUS stat = 0;
 
-	switch (pdrv) {
-	case DEV_ROM_1:
-		return ROM_1_Status;
+    switch (pdrv) {
+    case DEV_ROM_1:
+        return ROM_1_Status;
 
-	/*case DEV_ROM_2:
-		return ROM_2_Status;*/
-	}
+    /*case DEV_ROM_2:
+        return ROM_2_Status;*/
+    }
 
-	return STA_NOINIT;
+    return STA_NOINIT;
 }
 
 
@@ -65,37 +65,37 @@ DSTATUS disk_status (
 /*-----------------------------------------------------------------------*/
 
 DSTATUS disk_initialize (
-	BYTE pdrv				/* Physical drive nmuber to identify the drive */
+    BYTE pdrv				/* Physical drive nmuber to identify the drive */
 )
 {
-	//result = PICO_FLASH_SIZE_BYTES;
-	//result = XIP_NOCACHE_NOALLOC_BASE;
-	//result = FLASH_SECTOR_SIZE;
+    //result = PICO_FLASH_SIZE_BYTES;
+    //result = XIP_NOCACHE_NOALLOC_BASE;
+    //result = FLASH_SECTOR_SIZE;
 
-	switch (pdrv) {
-	case DEV_ROM_1:
-		// First check if there is enough ROM space, all sizes totalled should be less than or equal to device flash
+    switch (pdrv) {
+    case DEV_ROM_1:
+        // First check if there is enough ROM space, all sizes totalled should be less than or equal to device flash
 
-		// Clear init flag
-		ROM_1_Status &= ~STA_NOINIT;
+        // Clear init flag
+        ROM_1_Status &= ~STA_NOINIT;
 
-		// Check if actual C firmware size is less than that specified in the config
-		if ((__flash_binary_end - XIP_BASE) <= C_STORAGE_SIZE) return ROM_1_Status |= STA_NOINIT;
+        // Check if actual C firmware size is less than that specified in the config
+        if ((__flash_binary_end - XIP_BASE) <= C_STORAGE_SIZE) return ROM_1_Status |= STA_NOINIT;
 
-		return ROM_1_Status;
+        return ROM_1_Status;
 
-	/*case DEV_ROM_2:
-		// Clear init flag
-		ROM_2_Status &= 0b110;
+    /*case DEV_ROM_2:
+        // Clear init flag
+        ROM_2_Status &= 0b110;
 
-		// Check if actual C firmware size is less than that specified in the config
-		if ((__flash_binary_end - XIP_BASE) <= C_STORAGE_SIZE) return ROM_2_Status |= STA_NOINIT;
+        // Check if actual C firmware size is less than that specified in the config
+        if ((__flash_binary_end - XIP_BASE) <= C_STORAGE_SIZE) return ROM_2_Status |= STA_NOINIT;
 
-		return ROM_2_Status;*/
-	}
+        return ROM_2_Status;*/
+    }
 
-	// Return no init if any other drive is initialized
-	return STA_NOINIT;
+    // Return no init if any other drive is initialized
+    return STA_NOINIT;
 }
 
 
@@ -105,29 +105,29 @@ DSTATUS disk_initialize (
 /*-----------------------------------------------------------------------*/
 
 DRESULT disk_read (
-	BYTE pdrv,		/* Physical drive nmuber to identify the drive */
-	BYTE *buff,		/* Data buffer to store read data */
-	LBA_t sector,	/* Start sector in LBA */
-	UINT count		/* Number of sectors to read */
+    BYTE pdrv,		/* Physical drive nmuber to identify the drive */
+    BYTE *buff,		/* Data buffer to store read data */
+    LBA_t sector,	/* Start sector in LBA */
+    UINT count		/* Number of sectors to read */
 )
 {
-	size_t buffsize = count * STORAGE_SECTOR_SIZE;
+    size_t buffsize = count * STORAGE_SECTOR_SIZE;
 
-	switch (pdrv) {
-	case DEV_ROM_1:
-		// Copy from flash to buffer
-		memcpy(buff, (BYTE*)(XIP_EXE_STORAGE_BASE + (sector * STORAGE_SECTOR_SIZE)), buffsize);
+    switch (pdrv) {
+    case DEV_ROM_1:
+        // Copy from flash to buffer
+        memcpy(buff, (BYTE*)(XIP_EXE_STORAGE_BASE + (sector * STORAGE_SECTOR_SIZE)), buffsize);
 
-		return RES_OK;
+        return RES_OK;
 
-	/*case DEV_ROM_2:
-		// Copy from flash to buffer
-		memcpy(buff, (BYTE*)(XIP_USER_STORAGE_BASE + (sector * FLASH_SECTOR_SIZE)), buffsize);
+    /*case DEV_ROM_2:
+        // Copy from flash to buffer
+        memcpy(buff, (BYTE*)(XIP_USER_STORAGE_BASE + (sector * FLASH_SECTOR_SIZE)), buffsize);
 
-		return RES_OK;*/
-	}
+        return RES_OK;*/
+    }
 
-	return RES_PARERR;
+    return RES_PARERR;
 }
 
 
@@ -139,36 +139,36 @@ DRESULT disk_read (
 #if FF_FS_READONLY == 0
 
 DRESULT disk_write (
-	BYTE pdrv,			/* Physical drive nmuber to identify the drive */
-	const BYTE *buff,	/* Data to be written */
-	LBA_t sector,		/* Start sector in LBA */
-	UINT count			/* Number of sectors to write */
+    BYTE pdrv,			/* Physical drive nmuber to identify the drive */
+    const BYTE *buff,	/* Data to be written */
+    LBA_t sector,		/* Start sector in LBA */
+    UINT count			/* Number of sectors to write */
 )
 {
-	uint32_t interrupts;
-	size_t buffsize = count * STORAGE_SECTOR_SIZE;
+    uint32_t interrupts;
+    size_t buffsize = count * STORAGE_SECTOR_SIZE;
 
-	switch (pdrv) {
-	case DEV_ROM_1:
-		// Copy from buffer to flash
-		interrupts = save_and_disable_interrupts();
-		flash_range_erase(EXE_STORAGE_BASE + (sector * STORAGE_SECTOR_SIZE), buffsize);
-		flash_range_program(EXE_STORAGE_BASE + (sector * STORAGE_SECTOR_SIZE), buff, buffsize);
-		restore_interrupts(interrupts);
+    switch (pdrv) {
+    case DEV_ROM_1:
+        // Copy from buffer to flash
+        interrupts = save_and_disable_interrupts();
+        flash_range_erase(EXE_STORAGE_BASE + (sector * STORAGE_SECTOR_SIZE), buffsize);
+        flash_range_program(EXE_STORAGE_BASE + (sector * STORAGE_SECTOR_SIZE), buff, buffsize);
+        restore_interrupts(interrupts);
 
-		return RES_OK;
+        return RES_OK;
 
-	/*case DEV_ROM_2:
-		// Copy from buffer to flash
-		interrupts = save_and_disable_interrupts();
-		flash_range_erase(USER_STORAGE_BASE + (sector * FLASH_SECTOR_SIZE), buffsize);
-		flash_range_program(USER_STORAGE_BASE + (sector * FLASH_SECTOR_SIZE), buff, buffsize);
-		restore_interrupts(interrupts);
+    /*case DEV_ROM_2:
+        // Copy from buffer to flash
+        interrupts = save_and_disable_interrupts();
+        flash_range_erase(USER_STORAGE_BASE + (sector * FLASH_SECTOR_SIZE), buffsize);
+        flash_range_program(USER_STORAGE_BASE + (sector * FLASH_SECTOR_SIZE), buff, buffsize);
+        restore_interrupts(interrupts);
 
-		return RES_OK;*/
-	}
+        return RES_OK;*/
+    }
 
-	return RES_PARERR;
+    return RES_PARERR;
 }
 
 #endif
@@ -179,65 +179,65 @@ DRESULT disk_write (
 /*-----------------------------------------------------------------------*/
 
 DRESULT disk_ioctl (
-	BYTE pdrv,		/* Physical drive nmuber (0..) */
-	BYTE cmd,		/* Control code */
-	void *buff		/* Buffer to send/receive control data */
+    BYTE pdrv,		/* Physical drive nmuber (0..) */
+    BYTE cmd,		/* Control code */
+    void *buff		/* Buffer to send/receive control data */
 )
 {
-	LBA_t* sector_count = (LBA_t*)buff;
-	WORD* sector_size = (WORD*)buff;
+    LBA_t* sector_count = (LBA_t*)buff;
+    WORD* sector_size = (WORD*)buff;
 
-	switch (pdrv) {
-	case DEV_ROM_1:
-		switch (cmd) {
-		case CTRL_SYNC:
-			return RES_OK;
+    switch (pdrv) {
+    case DEV_ROM_1:
+        switch (cmd) {
+        case CTRL_SYNC:
+            return RES_OK;
 
-		case GET_SECTOR_COUNT:
-			*sector_count = (LBA_t)((PICO_FLASH_SIZE_BYTES - C_STORAGE_SIZE) / STORAGE_SECTOR_SIZE);
-			return RES_OK;
+        case GET_SECTOR_COUNT:
+            *sector_count = (LBA_t)((PICO_FLASH_SIZE_BYTES - C_STORAGE_SIZE) / STORAGE_SECTOR_SIZE);
+            return RES_OK;
 
-		case GET_SECTOR_SIZE:
-			*sector_size = (WORD)(STORAGE_SECTOR_SIZE);
-			return RES_OK;
+        case GET_SECTOR_SIZE:
+            *sector_size = (WORD)(STORAGE_SECTOR_SIZE);
+            return RES_OK;
 
-		case CTRL_TRIM:
-			// TODO: implement later
-			// Erase data from sectors in buff[0] to buff[1]
-			return RES_OK;
-		}
+        case CTRL_TRIM:
+            // TODO: implement later
+            // Erase data from sectors in buff[0] to buff[1]
+            return RES_OK;
+        }
 
-		return RES_PARERR;
+        return RES_PARERR;
 
-	/*case DEV_ROM_2:
-		switch (cmd) {
-		case CTRL_SYNC:
-			return RES_OK;
+    /*case DEV_ROM_2:
+        switch (cmd) {
+        case CTRL_SYNC:
+            return RES_OK;
 
-		case GET_SECTOR_COUNT:
-			*sector_count = (LBA_t)(PICO_FLASH_SIZE_BYTES / FLASH_SECTOR_SIZE);
-			return RES_OK;
+        case GET_SECTOR_COUNT:
+            *sector_count = (LBA_t)(PICO_FLASH_SIZE_BYTES / FLASH_SECTOR_SIZE);
+            return RES_OK;
 
-		case GET_SECTOR_SIZE:
-			*sector_size = (WORD)(FLASH_SECTOR_SIZE);
-			return RES_OK;
+        case GET_SECTOR_SIZE:
+            *sector_size = (WORD)(FLASH_SECTOR_SIZE);
+            return RES_OK;
 
-		case CTRL_TRIM:
-			// TODO: implement later
-			// Erase data from sectors in buff[0] to buff[1]
-			return RES_OK;
-		}
+        case CTRL_TRIM:
+            // TODO: implement later
+            // Erase data from sectors in buff[0] to buff[1]
+            return RES_OK;
+        }
 
-		return RES_PARERR;*/
-	}
+        return RES_PARERR;*/
+    }
 
-	return RES_PARERR;
+    return RES_PARERR;
 }
 
 
 DWORD get_fattime(void) {
-	// If board has wifi get internet time?
-	// Get time at startup for RTC, then use that, don't keep fetching the time
+    // If board has wifi get internet time?
+    // Get time at startup for RTC, then use that, don't keep fetching the time
     return ((2022 - 1980) << 25) | ((12) << 21) | ((1) << 16) | ((12) << 11) | ((0) << 5) | (0 / 2);
 }
 
